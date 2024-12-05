@@ -1,0 +1,81 @@
+\documentclass[withoutpreface,bwprint]{cumcmthesis} %去掉封面与编号页，电子版提交的时候使用。
+\usepackage{bm}
+\usepackage{appendix}
+\usepackage[framemethod=TikZ]{mdframed}
+\usepackage{url}   % 网页链接
+\usepackage{subcaption} % 子标题
+\usepackage{array}
+\usepackage{graphicx}
+\usepackage{caption}
+\usepackage{float}
+\usepackage{natbib}
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{pdfpages}
+\usepackage{graphicx}
+
+\usetikzlibrary{decorations.pathreplacing} % 用于添加大括号的库
+
+\begin{document}
+\title{编者注}
+
+\maketitle
+\input{preface/0.tex}
+\newpage
+
+\tableofcontents
+\footnote{表星号的内容属于选修内容}
+\newpage
+
+\section{走进Linux系统}
+
+\section{现代C++技术}
+\subsection{走进面向对象编程：类}
+
+\input{Chapter2/21.tex}
+
+\subsection{魔法代码：C++17}
+
+
+\input{Chapter2/22.tex}
+
+\section{编译原理与CMake基础}
+
+\input{Chapter3/3.tex}
+
+\section{ROS2基础}
+在机器人开发过程中，我们往往需要使用到大量的传感器和执行机构，这时候，设备的有效管理和设备之间的通信就显得尤为重要，ROS2就是为了解决这一问题而生的。ROS2是一个开源的机器人操作系统，它提供了一系列的功能，包括：
+\input{Chapter4/4.tex}
+
+\section{OpenCV与图像处理基础}
+在计算机处理过程中，图像处理是一种重要的任务。OpenCV是开源的计算机视觉库，它提供了一系列的图像处理算法，包括图像的读取、写入、显示、裁剪、缩放、旋转、滤波、轮廓检测、特征提取、匹配、形态学处理等。
+
+\section{神经网络与深度学习基础}
+机器学习是人工智能领域的一个重要研究方向，它利用大量的数据训练模型，从而对未知的输入进行预测。深度学习是机器学习的一个分支，它利用神经网络来学习复杂的非线性函数。
+
+\input{Chapter6/6.tex}
+
+\section{CUDA与GPU加速基础}
+GPU是一种并行计算平台，它可以加速计算机的计算任务。CUDA是一种基于GPU的编程语言，它可以用来编写高性能的并行程序。
+
+\section{相机参数与成像原理*} 
+
+在机器视觉算法中，有一个很重要又经常被忽略的部分。有些时候我们太关注算法的性能，但是忽略了相机的成像质量。“巧妇难为无米之炊”，如果相机成像的效果不好，那么再优秀的算法都无法发挥作用。
+相机是机器视觉最重要的组成部分，它可以捕捉到周围环境的各种信息，并将其转换为图像。相机参数是相机的一些基本参数，如焦距、光圈、快门等。
+了解相机参数和成像原理对于理解相机的工作原理非常重要。
+
+\section{信号处理与滤波器*}
+在前端的成像和识别过程中，由于或多多少的原因，信号会发生一些变化，也会产生大量的噪声。如何滤除这些噪声，对于算法决策的准确性至关重要，在本章节我们将学习一些滤波器的基本知识。
+并且运用我们学习到的知识，去自主设计一些滤波器，并将其应用到我们的算法中。
+
+\section{导航技术初步*}
+对于一个智能机器人来说，获取周围环境和自身情况的能力是至关重要的。导航技术是其核心技术之一。在本章节中，我们将了解激光雷达的工作原理，并学习一些基本的导航算法，并将其应用到我们的机器人中。
+
+\section{\quad 决策树算法*}
+在机器学习领域，决策树算法是一种常用的算法，它可以使得机器人可以灵活地对外界环境做出正确的响应。在本章节中，我们将学习决策树算法的基本原理，并将其应用到我们的机器学习项目中。
+
+\bibliographystyle{plain} % 选择参考文献的样式
+\bibliography{ref} % 指定BibTeX文件
+
+
+\end{document} 
