@@ -1,0 +1,75 @@
+\subsubsection{conda简介}
+
+conda是一个包，依赖和环境管理工具，可以用于在同一个机器上安装不同Python版本的软件包及其依赖，并能够在不同的Python环境之间切换。一个conda环境就是一个目录包含所有的安装包和依赖，不同环境之间独立且不相互影响，跟python的虚拟环境virtualenv一样。通过conda的创建的虚拟环境，我们可以管理不同的python版本及其安装包而无需担心因不同版本导致的冲突；同时，在配置一个新环境时我们还可以利用虚拟环境来试错而不用担心对电脑原生环境造成无法挽回的伤害。
+
+conda适用于多种语言，如: Python,R,Scala, Java,Javascript, C/ C++, FORTRAN等。conda默认随miniconda或anaconda发行。
+
+安装anacoda后，在用户HOME目录下，会有一个anaconda目录，其中bin,include,lib,share里面是conda默认环境的文件，envs存放conda管理的环境信息，pkgs里面是解压的软件安装包。
+
+\subsubsection{conda配置}
+
+conda默认的配置文件为\texttildelow /.condarc，通过修改配置文件我们可以配置如下内容：
+
+\begin{enumerate}
+\item conda从哪里获取安装包
+
+\item conda是否使用代理服务器
+
+\item conda从哪里获取环境信息
+
+\item 当conda环境激活的时候是否更新bash提示
+\end{enumerate}
+
+\textbf{查看所有配置信息}
+
+\begin{tcode}
+	conda config --show --json
+\end{tcode}
+
+\textbf{配置使用清华的源}
+
+\begin{tcode}
+	conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/free
+	conda config --add channels https://mirrors.tuna.tsinghua.edu.cn/anaconda/pkgs/main
+	conda config --set show_channel_urls yes
+\end{tcode}
+
+\textbf{配置安装软件时不要提示输入yes}
+
+\begin{tcode}
+	conda config --set always_yes true
+\end{tcode}
+
+\textbf{取消每次启动自动激活conda的基础环境}
+
+\begin{tcode}
+	conda config --set auto_activate_base false
+\end{tcode}
+
+建议安装后关闭自动激活，conda环境会和ros2冲突导致ros2的包无法正常编译！！！
+
+\subsubsection{conda基础操作}
+
+这里介绍一些conda命令行的基础操作：
+
+\begin{center}
+\textbf{conda基础操作}
+	\begin{tabular}{cc}
+		\toprule[1.5pt]
+		命令 & 作用\\
+		\midrule[1pt]
+		$  conda\enspace --version    $		&查看当前版本\\
+		$  conda\enspace activate\enspace [env]    $		&激活环境\\
+		$  conda\enspace deactivate   $		&退出环境\\
+		$  conda\enspace update\enspace conda   $		&更新conda\\
+		$  conda\enspace create\enspace --name\enspace [env]\enspace python=3.9\enspace [packages...]   $		&创建python 3.9的环境并安装包\\
+		$  conda\enspace info\enspace --envs   $		&查看所有的环境\\
+		$  conda\enspace list   $		&查看当前环境下的包\\
+		$  conda\enspace install\enspace --name\enspace [env]\enspace [package]   $		&安装包到指定环境中\\
+		$  conda\enspace remove\enspace --name\enspace [env]\enspace [package]   $		&删除指定环境里的包\\
+		\bottomrule[1.5pt]
+	\end{tabular}
+\end{center}
+
+至此linux部分教程全部结束，相信经过一段时间的熟悉你也能像用windows一样熟练操作linux。当然以上只是linux系统全部功能的冰山一角，更多的操作还望读者在今后的实际工作中自己学习发现，接下来我们将在linux系统上正式开始视觉相关工作的学习。
+

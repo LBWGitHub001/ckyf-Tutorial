@@ -1,0 +1,54 @@
+导航需要地图。
+
+
+我们使用的是二维地图（毕竟小哨兵还没学会飞行，在z轴上运动能力为0（其实还有roll和pitch），而且二维导航相关的导航，定位，建图方案都比较成熟）
+
+\subsection{地图的获取}
+首先，我们接收激光雷达扫描到的点云图，然后对其进行处理，压缩到二维，得到地图。
+
+处理的第一步是进行点云的滤波。下面是一些常用的滤波方法：
+\textbf{*注意：因为点云是通过物体表面反射光信息获取的，所以一个实体只有表面会有点云，内部是没有的。}
+\begin{enumerate}
+\item \textbf{Voxel滤波}：因为我们用的激光雷达比较牛逼，获得的近处点云比较稠密（保证远处的分辨率），这样直接计算会导致计算量过大，
+所以我们可以将点云按照空间分辨率进行分割，又叫体素网格下采样。
+\begin{tcode}
+    pcl::VoxelGrid<pcl::PointXYZ> voxfilter;
+    voxfilter.setInputCloud(cloud);
+    // 设置滤波器的体素大小
+    voxfilter.setLeafSize(0.1, 0.1, 0.1);
+    voxfilter.filter(*cloud);
+\end{tcode}
+这样，我们就将cloud里每个0.1m*0.1m*0.1m的体素（三维空间中的一个小立方体单元）内的点替换为该体素的中心点。
+将临近的点聚合到一个体素中来实现，可以减少点云数据的复杂度，同时保留整体的形状和结构。
+\item \textbf{直通滤波}：直通滤波就是最简单的剔除不需要点云的滤波方法。比如小哨兵小小的，对它来说50cm以上的障碍物根本不影响他通过，那我们就可以把0.5m以上的点剔除掉。
+\begin{tcode}
+    pass_through_filter_z_.setFilterFieldName("z");
+    pass_through_filter_z_.setFilterLimits(min_z, max_z);
+    pass_through_filter_z_.setFilterLimitsNegative(false);
+    pass_through_filter_z_.setInputCloud(input_cloud);
+    pass_through_filter_z_.filter(*input_cloud);
+\end{tcode}
+这样，我们就将cloud里的z轴坐标在min\_z和max\_z之外的点剔除掉了。
+同样的道理，还可以通过设置xy范围，把远处的，懒得考虑的点剔除掉。以及设置剔除一定半径内的点云，把哨兵本体的点云剔除掉。
+\item \textbf{统计滤波}：在点云处理中，统计滤波是一种用于识别和移除离群点的方法，这些离群点可能是由于测量误差或噪声引起的。
+该方法基于假设，即点云数据中的大部分点是符合高斯分布的，而离群点则是那些与这种分布显著不同的点。
+\begin{tcode}
+    pcl::StatisticalOutlierRemoval<pcl::PointXYZ> sor;
+    sor.setInputCloud(cloud);
+    // 设置近邻点的数量
+    sor.setMeanK(50); 
+    // 设置标准差倍数阈值
+    sor.setStddevMulThresh(1.0); 
+    // 设置为false表示移除离群点，设置为true表示保留离群点
+    sor.setNegative(false); 
+    sor.filter(*cloud);
+\end{tcode}
+通过这种方式，我们可以计算每个点到其K个最近邻点的平均距离，并根据这个平均距离与全局平均距离的比较来确定是否为离群点。
+如果一个点的平均距离超过了全局平均距离加上标准差倍数的阈值，那么这个点就被认为是离群点并被移除。
+这样可以有效地减少点云中的噪声和异常值，提高后续处理的准确性和效率。
+
+\item \textbf{特殊方法滤波}：有时候一些特殊的物体需要滤掉，这时候就要自己编写特定的代码剔除。比如地板，是的，地板也是实体，也会产生点云，但他不是障碍物，所以需要过滤掉。
+我们可以简单的通过直通滤波，把z轴坐标在0.1m以下的点剔除掉。也可以通过聚类（即将点云数据中的点根据它们的空间位置或属性特征分组），将最大的聚类剔除掉，这样就剔除了地板。
+而我们现在用的是tc学长写的法向量剔除法，计算每个点的法向量，然后剔除法向量与z平面夹角小于一定角度的点（通俗来说：平的就是地板）。
+\end{enumerate}
+
